@@ -1,14 +1,13 @@
 <template>
     <v-layout>
-        <v-flex xs12 sm6 offset-sm3>
-            <!-- ログインするワークスペースがまだ発見していない -->
-            <div v-if="targetWorkspace === null">
+        <v-flex xs12 sm8 offset-sm3>
+            <div>
                 <v-form @submit.prevent="selectWorkspace">
                     <v-card>
                         <v-card-title primary-title>
                             <div>
-                                <h3 class="headline mb-3">ワークスペースにサインインする</h3>
-                                <p>​参⁠加⁠し⁠て⁠い⁠る⁠ワ⁠ー⁠ク⁠ス⁠ペ⁠ー⁠ス⁠の​Slack URL を入力してください。</p>
+                                <h2 class="display-1 mb-3 font-weight-bold">ワークスペースにサインインする</h2>
+                                <p>​参⁠加⁠し⁠て⁠い⁠る⁠ワ⁠ー⁠ク⁠ス⁠ペ⁠ー⁠ス⁠の​Zlack URL を入力してください。</p>
 
                                 <v-layout>
                                     <v-text-field
@@ -34,11 +33,6 @@
                     </v-card>
                 </v-form>
             </div>
-
-            <!-- ログインするワークスペースが発見済み -->
-            <div v-else>
-                <login target-workspace-name="targetWorkspace.name"></login>
-            </div>
         </v-flex>
     </v-layout>
 </template>
@@ -53,7 +47,6 @@ export default {
           form: {
             workspaceUrl: null,
           },
-          targetWorkspace: null,
           errors: {},
         }
     },

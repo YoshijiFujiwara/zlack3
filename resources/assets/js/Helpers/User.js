@@ -2,13 +2,15 @@ import Token from './Token';
 import AppStorage from './AppStorage';
 
 class User {
+    // ログイン
     login(inputData) {
         axios.post('/api/auth/login', inputData)
-            .then(res => this.responseAfterLogin(res, inputData))
+            .then(res => this.loginAfterResponse(res, inputData))
             .catch(error => console.log(error.response.data));
     }
 
-    responseAfterLogin(res, inputData) {
+    // 受け取ったresponseから、ローカルストレージに保存する値を決め、ログインする
+    loginAfterResponse(res, inputData) {
         const access_token = res.data.access_token;
         const user_email = inputData.email;
         const workspace_id = inputData.workspace_id;
@@ -39,19 +41,20 @@ class User {
         AppStorage.clear();
     }
 
+    // ログインユーザーのemail
     email() {
         if (this.loggedIn) {
             return AppStorage.getUserEmail();
         }
     }
 
+    // ログインユーザーのID
     id() {
         if (this.loggedIn) {
             const payload = Token.payload(AppStorage.getToken());
             return payload.sub;
         }
     }
-
 }
 
 export default User = new User();

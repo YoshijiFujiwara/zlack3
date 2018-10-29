@@ -5,10 +5,16 @@ Vue.use(VueRouter);
 
 import Login from '../components/login/Login';
 import SelectWorkspace from '../components/login/SelectWorkspace';
+import ExampleComponent from '../components/ExampleComponent';
 
 const routes = [
-  { path: '/login/:workspaceId', component: Login },
-  { path: '/select_workspace', component: SelectWorkspace },
+    { path: '/login/:workspaceId', component: Login },
+    { path: '/select-workspace', component: SelectWorkspace },
+    { path: '/get-started', component: SelectWorkspace },
+
+    { path: '/create', component: SelectWorkspace },
+
+    { path: '/', component: ExampleComponent },
 ];
 
 const router = new VueRouter({
