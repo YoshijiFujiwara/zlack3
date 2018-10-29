@@ -19,7 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
+            $table->string('workspace_id');
+            $table->integer('role_id')->comment('ユーザーがこのワークスペースで持つロール');
+            $table->boolean('is_inviting')->default(0)->comment('招待中ならtrue');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

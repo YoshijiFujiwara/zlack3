@@ -82,4 +82,13 @@ class User extends Authenticatable implements JWTSubject
     /**
      * ==================================================== UUID生成用ここまで ====================================================
      */
+
+
+    /**
+     * ワークスペース
+     */
+    public function workspace()
+    {
+        return $this->belongsTo(Workspace::class);
+    }
 }
