@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// SPA用
+Route::view('/', 'home');
+Route::view('/{any}', 'home');
 
 Auth::routes();
 

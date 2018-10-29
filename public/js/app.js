@@ -47445,13 +47445,70 @@ var User = function () {
 
     _createClass(User, [{
         key: 'login',
-        value: function login(data) {
-            console.log(data);
-            axios.post('/api/auth/login', data).then(function (res) {
-                __WEBPACK_IMPORTED_MODULE_0__Token__["a" /* default */].payload(res.data);
+        value: function login(inputData) {
+            var _this = this;
+
+            axios.post('/api/auth/login', inputData).then(function (res) {
+                return _this.responseAfterLogin(res, inputData);
             }).catch(function (error) {
                 return console.log(error.response.data);
             });
+        }
+    }, {
+        key: 'responseAfterLogin',
+        value: function responseAfterLogin(res, inputData) {
+            var access_token = res.data.access_token;
+            var user_email = inputData.email;
+            var workspace_id = inputData.workspace_id;
+
+            if (__WEBPACK_IMPORTED_MODULE_0__Token__["a" /* default */].isValid(access_token)) {
+                // メールアドレスとワークスペースIDで一意
+                __WEBPACK_IMPORTED_MODULE_1__AppStorage__["a" /* default */].store(user_email, workspace_id, access_token);
+            }
+        }
+
+        // トークンを持っているか
+
+    }, {
+        key: 'hasToken',
+        value: function hasToken() {
+            var storedToken = __WEBPACK_IMPORTED_MODULE_1__AppStorage__["a" /* default */].getToken();
+            if (storedToken) {
+                return __WEBPACK_IMPORTED_MODULE_0__Token__["a" /* default */].isValid(storedToken);
+            }
+            return false;
+        }
+
+        // ログイン済み
+
+    }, {
+        key: 'loggedIn',
+        value: function loggedIn() {
+            return this.hasToken();
+        }
+
+        // ログアウト
+        // ワークスペースごとにログアウトする機構が必要な気がする
+
+    }, {
+        key: 'logout',
+        value: function logout() {
+            __WEBPACK_IMPORTED_MODULE_1__AppStorage__["a" /* default */].clear();
+        }
+    }, {
+        key: 'email',
+        value: function email() {
+            if (this.loggedIn) {
+                return __WEBPACK_IMPORTED_MODULE_1__AppStorage__["a" /* default */].getUserEmail();
+            }
+        }
+    }, {
+        key: 'id',
+        value: function id() {
+            if (this.loggedIn) {
+                var payload = __WEBPACK_IMPORTED_MODULE_0__Token__["a" /* default */].payload(__WEBPACK_IMPORTED_MODULE_1__AppStorage__["a" /* default */].getToken());
+                return payload.sub;
+            }
         }
     }]);
 
@@ -47475,13 +47532,36 @@ var Token = function () {
     }
 
     _createClass(Token, [{
-        key: 'payload',
+        key: "isValid",
 
+
+        // トークンの検証
+        value: function isValid(token) {
+            var payload = this.payload(token);
+            if (payload) {
+                // todo: イケてない気がするので、後で直す
+                // このURLでなければ、おかしい
+                return payload.iss === "http://zlack3.test/api/auth/login";
+            }
+            return false;
+        }
 
         // トークンのペイロード
+
+    }, {
+        key: "payload",
         value: function payload(token) {
-            var payload = token.split('.')[1];
-            console.log(payload);
+            var payload = token.split('.')[1]; // 区切られた部分の真ん中だな
+            console.log(this.decode(payload));
+            return this.decode(payload);
+        }
+
+        // デコード
+
+    }, {
+        key: "decode",
+        value: function decode(payload) {
+            return JSON.parse(atob(payload));
         }
     }]);
 
@@ -47516,18 +47596,27 @@ var AppStorage = function () {
         // ユーザー情報をローカルストレージに保存する
 
     }, {
-        key: 'storeUser',
-        value: function storeUser(user) {
-            localStorage.setItem('user', user);
+        key: 'storeUserEmail',
+        value: function storeUserEmail(user_email) {
+            localStorage.setItem('user_email', user_email);
+        }
+
+        // ワークスペースIDを保存する
+
+    }, {
+        key: 'storeWorkspaceId',
+        value: function storeWorkspaceId(workspace_id) {
+            localStorage.setItem('workspace_id', workspace_id);
         }
 
         // ローカルストレージに保存
 
     }, {
         key: 'store',
-        value: function store(user, token) {
+        value: function store(user_email, workspace_id, token) {
+            this.storeUserEmail(user_email);
+            this.storeWorkspaceId(workspace_id);
             this.storeToken(token);
-            this.storeUser(user);
         }
 
         // ローカルストレージ内を消去
@@ -47536,7 +47625,8 @@ var AppStorage = function () {
         key: 'clear',
         value: function clear() {
             localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('workspace_id');
         }
 
         // ローカルストレージからトークンとユーザーを取得
@@ -47547,16 +47637,16 @@ var AppStorage = function () {
             return localStorage.getItem('token');
         }
     }, {
-        key: 'getUser',
-        value: function getUser() {
-            return localStorage.getItem('user');
+        key: 'getUserEmail',
+        value: function getUserEmail() {
+            return localStorage.getItem('user_email');
         }
     }]);
 
     return AppStorage;
 }();
 
-/* unused harmony default export */ var _unused_webpack_default_export = (AppStorage = new AppStorage());
+/* harmony default export */ __webpack_exports__["a"] = (AppStorage = new AppStorage());
 
 /***/ }),
 /* 44 */
@@ -72013,7 +72103,7 @@ var render = function() {
           _c(
             "router-link",
             { staticClass: "white--text", attrs: { to: "/" } },
-            [_vm._v("zlack ")]
+            [_vm._v("zlack3 ")]
           )
         ],
         1
@@ -74830,6 +74920,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -74837,8 +74929,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             // ログイン用
             loginForm: {
                 email: null,
-                password: null,
-                workspaceId: null
+                password: null
             },
             targetWorkspace: null
         };
@@ -74847,23 +74938,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var _this = this;
 
         // ログイン先のワークスペース情報を取得する
-        axios.get('/api/target_workspace/' + this.$route.params.workspaceId).then(function (res) {
+        axios.get("/api/target_workspace/" + this.$route.params.workspaceId).then(function (res) {
             _this.targetWorkspace = res.data.data;
         }).catch(function (error) {
             return console.log(error);
         });
-        this.loginForm.workspaceId = this.targetWorkspace.id;
+        this.loginForm.workspace_id = this.targetWorkspace.id;
     },
 
     methods: {
         login: function login() {
-            // User.login(this.loginForm);
-
-            axios.post('/api/auth/login', this.loginForm).then(function (res) {
-                Token.payload(res.data);
-            }).catch(function (error) {
-                return console.log(error.response.data);
-            });
+            this.loginForm.workspace_id = this.targetWorkspace.id;
+            User.login(this.loginForm);
         }
     }
 });
@@ -74877,49 +74963,79 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-form",
-    {
-      on: {
-        submit: function($event) {
-          $event.preventDefault()
-          return _vm.login($event)
-        }
-      }
-    },
+    "v-layout",
     [
-      _c("h2", [
-        _vm._v(
-          "ワークスペース: " +
-            _vm._s(_vm.targetWorkspace.name) +
-            " にログインする"
-        )
-      ]),
-      _vm._v(" "),
-      _c("v-text-field", {
-        attrs: { type: "email", label: "メールアドレス", required: "" },
-        model: {
-          value: _vm.loginForm.email,
-          callback: function($$v) {
-            _vm.$set(_vm.loginForm, "email", $$v)
-          },
-          expression: "loginForm.email"
-        }
-      }),
-      _vm._v(" "),
-      _c("v-text-field", {
-        attrs: { type: "password", label: "パスワード", required: "" },
-        model: {
-          value: _vm.loginForm.password,
-          callback: function($$v) {
-            _vm.$set(_vm.loginForm, "password", $$v)
-          },
-          expression: "loginForm.password"
-        }
-      }),
-      _vm._v(" "),
-      _c("v-btn", { attrs: { block: "", color: "green", type: "submit" } }, [
-        _vm._v("ログイン")
-      ])
+      _c(
+        "v-flex",
+        { attrs: { xs12: "", sm6: "", "offset-sm3": "" } },
+        [
+          _c(
+            "v-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.login($event)
+                }
+              }
+            },
+            [
+              _c(
+                "v-card",
+                { staticClass: "px-3 py-3" },
+                [
+                  _c("h2", [
+                    _vm._v(
+                      "ワークスペース: " +
+                        _vm._s(_vm.targetWorkspace.name) +
+                        " にログインする"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      type: "email",
+                      label: "メールアドレス",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.loginForm.email,
+                      callback: function($$v) {
+                        _vm.$set(_vm.loginForm, "email", $$v)
+                      },
+                      expression: "loginForm.email"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      type: "password",
+                      label: "パスワード",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.loginForm.password,
+                      callback: function($$v) {
+                        _vm.$set(_vm.loginForm, "password", $$v)
+                      },
+                      expression: "loginForm.password"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    { attrs: { block: "", color: "green", type: "submit" } },
+                    [_vm._v("ログイン")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
     ],
     1
   )

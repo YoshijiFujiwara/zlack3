@@ -1,7 +1,7 @@
 <template>
     <v-toolbar color="amber" app absolute clipped-left>
         <v-toolbar-side-icon @click.native="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="title ml-3 mr-5"><router-link to="/" class="white--text">zlack&nbsp;</router-link></span>
+        <span class="title ml-3 mr-5"><router-link to="/" class="white--text">zlack3&nbsp;</router-link></span>
         <v-text-field
                 solo-inverted
                 flat

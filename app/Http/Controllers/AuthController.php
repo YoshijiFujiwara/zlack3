@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Model\Workspace;
+use App\Http\Resources\WorkspaceResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -14,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('JWT', ['except' => ['login', 'selectWorkspace', 'signup']]);
     }
 
     /**
@@ -24,13 +28,42 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
+        $credentials = request(['email', 'password', 'workspace_id']);
+
+        Log::channel('single')->info(print_r($credentials, true));
+        Log::channel('single')->info(print_r(auth()->attempt($credentials), true));
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * ログインするワークスペースを選択
+     */
+    public function selectWorkspace(Request $formData)
+    {
+        // サインインするワークスペース名
+        $workspaceUrl = 'https://' . $formData->workspaceUrl . '.zlack.com';
+        $workspace = Workspace::where('url', $workspaceUrl)->first();
+
+        if (isset($workspace)) {
+            return new WorkspaceResource($workspace);
+        } else {
+            return response()->json(['error' => 'work space not found'], \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * ユーザー登録する
+     * todo:直す？
+     */
+    public function signup(SignUpRequest $request)
+    {
+        User::create($request->all());
+        return $this->login($request);
     }
 
     /**

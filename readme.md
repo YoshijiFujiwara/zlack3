@@ -1,3 +1,7 @@
+cSWTWSNMRsKDBcX
+gerlach.florian@example.com
+secret
+
 #作業手順
 
 ## UUID と JWTのための準備

@@ -1,33 +1,35 @@
 <template>
-    <v-form @submit.prevent="login">
-        <h2>ワークスペース: {{ targetWorkspace.name }} にログインする</h2>
+    <v-layout>
+        <v-flex xs12 sm6 offset-sm3>
+            <v-form @submit.prevent="login">
+                <v-card
+                class="px-3 py-3"
+                >
+                    <h2>ワークスペース: {{ targetWorkspace.name }} にログインする</h2>
 
-        <v-text-field
-            v-model="loginForm.email"
-            type="email"
-            label="メールアドレス"
-            required
-        ></v-text-field>
+                    <v-text-field
+                            v-model="loginForm.email"
+                            type="email"
+                            label="メールアドレス"
+                            required
+                    ></v-text-field>
 
-        <v-text-field
-            v-model="loginForm.password"
-            type="password"
-            label="パスワード"
-            required
-        ></v-text-field>
+                    <v-text-field
+                            v-model="loginForm.password"
+                            type="password"
+                            label="パスワード"
+                            required
+                    ></v-text-field>
 
-        <!--<v-text-field-->
-            <!--id="workspaceTextField"-->
-            <!--v-model="loginForm.workspaceId"-->
-            <!--type="hidden"-->
-        <!--&gt;</v-text-field>-->
-
-        <v-btn
-            block
-            color="green"
-            type="submit"
-        >ログイン</v-btn>
-    </v-form>
+                    <v-btn
+                            block
+                            color="green"
+                            type="submit"
+                    >ログイン</v-btn>
+                </v-card>
+            </v-form>
+        </v-flex>
+    </v-layout>
 
 </template>
 
@@ -39,7 +41,6 @@ export default {
             loginForm: {
                 email: null,
                 password: null,
-                workspaceId: null
             },
             targetWorkspace: null
         }
@@ -51,17 +52,12 @@ export default {
                 this.targetWorkspace = res.data.data;
             })
             .catch(error => console.log(error));
-        this.loginForm.workspaceId = this.targetWorkspace.id;
+        this.loginForm.workspace_id = this.targetWorkspace.id;
     },
     methods: {
         login() {
-            // User.login(this.loginForm);
-
-            axios.post('/api/auth/login', this.loginForm)
-                .then(res => {
-                    Token.payload(res.data);
-                })
-                .catch(error => console.log(error.response.data));
+            this.loginForm.workspace_id = this.targetWorkspace.id;
+            User.login(this.loginForm);
         }
     }
 }

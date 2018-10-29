@@ -24,9 +24,13 @@ Route::group([
 
 ], function ($router) {
 
+    Route::post('selectWorkspace', 'AuthController@selectWorkspace'); // ログインするワークスペースを選択する
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 
 });
+
+// ワークスペースの情報を取得する
+Route::get('/target_workspace/{id}', 'WorkspaceController@getTargetWorkspace');
