@@ -20,3 +20,8 @@ php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServicePro
 php artisan jwt:secret
 ```
 
+## vueの準備
+```$xslt
+npm insall vuetify
+npm insall vue-router
+```

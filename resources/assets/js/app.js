@@ -7,7 +7,29 @@
 
 require('./bootstrap');
 
+// ヘルパークラスの読み込み
+import User from './Helpers/User';
+window.User = User;
+
+// vuetify
 window.Vue = require('vue');
+import Vue from 'vue';
+import Vuetify from 'vuetify';
+Vue.use(Vuetify);
+import 'vuetify/dist/vuetify.css';
+import colors from 'vuetify/es5/util/colors';
+
+Vue.use(Vuetify, {
+  theme: {
+    "primary": "#1976D2",
+    "secondary": "#424242",
+    "accesnt": "#82B1FF",
+    "error": "#FF5252",
+    "info": "#2196F3",
+    "success": "#4CAF50",
+    "warning": "#FFC107"
+  }
+})
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,8 +37,12 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('AppHome', require('./components/AppHome'));
+
+
+import router from './Router/router.js';
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    router
 });
