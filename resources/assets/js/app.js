@@ -39,7 +39,9 @@ Vue.use(Vuetify, {
  */
 
 Vue.component('AppHome', require('./components/AppHome'));
-
+Vue.component('ConfirmUser', require('./components/emails/ConfirmUser')); // 確認コード送信Email
+Vue.component('SigninLayout', require('./components/layouts/SigninLayout')); // 頻繁に使うので
+Vue.component('GetStartedLayout', require('./components/layouts/GetStartedLayout')); // 頻繁に使うので
 
 import router from './Router/router.js';
 

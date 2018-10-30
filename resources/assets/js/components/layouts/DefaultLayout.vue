@@ -12,15 +12,15 @@
 </template>
 
 <script>
-    import Navigation from './Navigation';
-    import Toolbar from './Toolbar';
+import Navigation from './Navigation';
+import Toolbar from './Toolbar';
 
-    export default {
-        components: {Navigation, Toolbar},
-        created() {
+export default {
+    components: {Navigation, Toolbar},
+    created() {
 
-        }
     }
+}
 </script>
 
 <style>

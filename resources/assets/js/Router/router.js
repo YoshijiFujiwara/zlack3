@@ -3,18 +3,23 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-import Login from '../components/login/Login';
-import SelectWorkspace from '../components/login/SelectWorkspace';
-import ExampleComponent from '../components/ExampleComponent';
+import SelectWorkspace from '../components/signin/SelectWorkspace';
+import CreateWorkspace from '../components/signin/CreateWorkspace';
+import SigninWorkspace from '../components/signin/SigninWorkspace';
+import ConfirmEmail from '../components/signin/ConfirmEmail';
+import GetStarted from '../components/signin/GetStarted';
+import GetStartedFind from '../components/signin/GetStartedFind';
+import GetStartedCreate from '../components/signin/GetStartedCreate';
 
 const routes = [
-    { path: '/login/:workspaceId', component: Login },
+    { path: '/', component: SelectWorkspace },
     { path: '/select-workspace', component: SelectWorkspace },
-    { path: '/get-started', component: SelectWorkspace },
-
-    { path: '/create', component: SelectWorkspace },
-
-    { path: '/', component: ExampleComponent },
+    { path: '/signin-workspace/:workspace_id', component: SigninWorkspace },
+    { path: '/create-workspace', component: CreateWorkspace },
+    { path: '/create-workspace/confirm-email', component: ConfirmEmail },
+    { path: '/get-started', component: GetStarted },
+    { path: '/get-started/find', component: GetStartedFind },
+    { path: '/get-started/create', component: GetStartedCreate },
 ];
 
 const router = new VueRouter({

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\WorkspaceResource;
+use App\Mail\ConfirmUser;
 use App\Model\Workspace;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorkspaceController extends Controller
@@ -92,5 +95,19 @@ class WorkspaceController extends Controller
     public function getTargetWorkspace($workspaceId)
     {
         return new WorkspaceResource(Workspace::find($workspaceId));
+    }
+
+    /**
+     * ワークスペース作成前の確認用メールの送信
+     */
+    public function sendConfirmEmail () {
+        // 6桁の乱数を生成
+        $randomNumber = '';
+        for ($i = 0; $i < 6; $i++) {
+            $randomNumber .= mt_rand(0, 9);
+        }
+
+        // todo: 仮のユーザー情報を直す
+        Mail::to('yfbiology2@gmail.com')->send(new ConfirmUser($randomNumber));
     }
 }

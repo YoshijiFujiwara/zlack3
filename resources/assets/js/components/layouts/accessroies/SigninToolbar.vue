@@ -4,7 +4,6 @@
         <span class="title ml-3 mr-5"><router-link to="/">zlack3&nbsp;</router-link></span>
 
         <v-spacer></v-spacer>
-        <router-link to="/select-workspace" class="mr-1">ワークスペースを探す</router-link>
         <router-link to="/" class="mr-1">製品</router-link>
         <router-link to="/" class="mr-1">料金プラン</router-link>
         <router-link to="/" class="mr-1">サポート</router-link>
@@ -20,7 +19,7 @@
                 <v-list-tile
                     v-for="(item, index) in items"
                     :key="index"
-                    @click=""
+                    @click="routerPush(item.routeName)"
                 >
                     <v-list-tile-title><v-icon>{{ item.icon }}</v-icon> {{ item.title }}</v-list-tile-title>
                 </v-list-tile>
@@ -33,17 +32,13 @@
 export default {
     data: () => ({
         items: [
-            {routeName: 'signin', icon: 'add_to_queue', title: '他のワークスペースにサインインする' },
-            {routeName: 'create', icon: 'fiber_new', title: 'ワークスペースを新規作成する' },
+            {routeName: '/select-workspace', icon: 'add_to_queue', title: '他のワークスペースにサインインする' },
+            {routeName: '/create-workspace', icon: 'fiber_new', title: 'ワークスペースを新規作成する' },
         ]
     }),
     methods: {
-        toggleMoreDisplay() {
-            if (this.moreDisplay) {
-                this.moreDisplay = false;
-            } else {
-                this.moreDisplay = true;
-            }
+        routerPush(routeName) {
+            this.$router.push(routeName);
         }
     }
 }
